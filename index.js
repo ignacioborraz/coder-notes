@@ -1,124 +1,37 @@
-const Container = require('./Container.js')
+require('dotenv').config()
+let products = require('./storage/products')
 
-let test1 = async () => {
+const express = require('express')
+const app = express()
+
+const PORT = process.env.PORT || 4000
+
+app.set('port',PORT)
+
+app.use(express.json())
+
+app.get('/products', async(_req, res) => {
     try {
-        let products = await new Container('products1.txt')
-        let p1 = await products.save({
-            title: 'Escuadra',                     
-            price: 123.45,           
-            thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/ruler-triangle-stationary-school-256.png'
-        })
-        console.log(p1)
-        let p2 = await products.save({
-            title: 'Calculadora',
-            price: 234.56,       
-            thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/calculator-math-tool-school-256.png'
-        })
-        console.log(p2)
+        let data = await products.getAll()
+        res.status(200).json(data)
     } catch(error) {
         console.log(error)
     }
-}
-//test1()
+})
 
-let test2 = async () => {
+app.get('/randomProducts', async(_req, res) => {
     try {
-        let products = await new Container('products2.txt')
-        let p1 = await products.save({
-            title: 'Escuadra',                     
-            price: 123.45,           
-            thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/ruler-triangle-stationary-school-256.png'
-        })
-        //console.log(p1)
-        let p2 = await products.save({
-            title: 'Calculadora',
-            price: 234.56,       
-            thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/calculator-math-tool-school-256.png'
-        })
-        //console.log(p2)
-        console.log(await products.getById(1))
-        console.log(await products.getById(5))
+        let data = await products.getAll()
+        const id = parseInt(Math.random() * data.length)
+        console.log(id)
+        let randomData = await products.getById(id || 1)
+        res.status(200).json(randomData)
     } catch(error) {
         console.log(error)
     }
-}
-//test2()
+})
 
-let test3 = async () => {
-    try {
-        let products = await new Container('products3.txt')
-        let p1 = await products.save({
-            title: 'Escuadra',                     
-            price: 123.45,           
-            thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/ruler-triangle-stationary-school-256.png'
-        })
-        //console.log(p1)
-        let p2 = await products.save({
-            title: 'Calculadora',
-            price: 234.56,       
-            thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/calculator-math-tool-school-256.png'
-        })
-        //console.log(p2)
-        let p3 = await products.save({
-            title: 'Globo Terráqueo',
-            price: 345.67,           
-            thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/globe-earth-geograhy-planet-school-256.png'
-        })
-        //console.log(p3)
-        console.log(await products.getAll())        
-    } catch(error) {
-        console.log(error)
-    }
-}
-//test3()
 
-let test4 = async () => {
-    try {
-        let products = await new Container('products4.txt')
-        let p1 = await products.save({
-            title: 'Escuadra',                     
-            price: 123.45,           
-            thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/ruler-triangle-stationary-school-256.png'
-        })
-        //console.log(p1)
-        let p2 = await products.save({
-            title: 'Calculadora',
-            price: 234.56,       
-            thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/calculator-math-tool-school-256.png'
-        })
-        //console.log(p2)
-        let p3 = await products.save({
-            title: 'Globo Terráqueo',
-            price: 345.67,           
-            thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/globe-earth-geograhy-planet-school-256.png'
-        })
-        //console.log(p3)
-        await products.deleteById(2)
-        console.log(await products.getAll())
-    } catch(error) {
-        console.log(error)
-    }
-}
-//test4()
-
-let test5 = async () => {
-    let products = await new Container('products5.txt')
-    await products.save({
-        title: 'Escuadra',       
-        price: 123.45,           
-        thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/ruler-triangle-stationary-school-256.png'
-    })
-    await products.save({
-        title: 'Calculadora',
-        price: 234.56,       
-        thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/calculator-math-tool-school-256.png'
-    })
-    await products.save({
-        title: 'Globo Terráqueo',
-        price: 345.67,           
-        thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/globe-earth-geograhy-planet-school-256.png'
-    })
-    await products.createOrReset('without elements')
-}
-//test5()
-
+app.listen(app.get('port'), () =>
+    console.log('SERVER READY IN PORT: '+app.get('port'))
+)
