@@ -25,7 +25,7 @@ let test1 = async () => {
         console.log(error)
     }
 }
-test1()
+//test1()
 
 let test2 = async () => {
     try {
@@ -129,6 +129,6 @@ let test5 = async () => {
         price: 345.67,           
         thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/globe-earth-geograhy-planet-school-256.png'
     })
-    await products.createOrReset('without elements')
+    await products.createOrReset('clean container')
 }
 //test5()
