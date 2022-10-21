@@ -71,7 +71,7 @@ module.exports = class Container {
         try {
             let data = await fs.promises.readFile(this.fileName, "utf-8")
             data = JSON.parse(data)
-            let product = data.find(pro => pro.id === id)
+            let product = data.find(pro => pro.id == id)
             if (product) {
                 return product
             } else {
@@ -84,14 +84,27 @@ module.exports = class Container {
 
     async putById(id,prop) {
         try {
+            //leo el archivo y obtengo los productos
             let data = await fs.promises.readFile(this.fileName, "utf-8")
+            //los parseo
             data = JSON.parse(data)
+            //busco el que coincide el id
             let product = data.find(pro => pro.id == id)
+            //si existe lo modifico
             if (product) {
                 product = {
                     ...product,
                     ...prop
                 }
+                data = data.map(prod => {
+                    if (prod.id==product.id) {
+                        prod = product
+                    }
+                    return prod
+                })
+                data = JSON.stringify(data,null,3)
+                //lo guardo en el archivo
+                await fs.promises.writeFile(this.fileName, data)
                 return product
             } else {
                 return null
