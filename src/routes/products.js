@@ -77,10 +77,10 @@ router.get('/:id', async(req, res, next) => {
 })
 
 
-router.put('/:id', async(req, res) => {
+router.put('/:id', async(req, res, next) => {
 //ruta para modificar un producto
 //utiliza el metodo PUT y requiere PARAMS para el id y BODY para la propiedad a modificar
-    let { id } = req.params
+let { id } = req.params
     try {
         let data = await products.putById(id, req.body)
         if (data) {
@@ -97,7 +97,7 @@ router.put('/:id', async(req, res) => {
     }
 })
 
-router.delete('/:id', async(req, res) => {
+router.delete('/:id', async(req, res, next) => {
 //ruta para eliminar un producto
 //utiliza el metodo DELETE y requiere PARAMS para el id
     let { id } = req.params
