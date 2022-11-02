@@ -1,0 +1,13 @@
+h3 Product Form
+
+form(action="/api/products", method="POST")
+    div(class="mb-3")
+        label(for="productTitle", class="form-label") Title
+        input(type="text", class="form-control", name="title", id="productTitle")
+    div(class="mb-3")
+        label(for="productPrice", class="form-label") Price
+        input(type="text", class="form-control", name="price", id="productPrice")
+    div(class="mb-3")
+        label(for="productThumbnail", class="form-label") URL thumbnail
+        input(type="text", class="form-control", name="thumbnail", id="productThumbnail", aria-describedby="thumbnailSource")
+    button(type="sumbit", class="btn btn-primary") Create!
