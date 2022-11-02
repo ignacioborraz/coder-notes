@@ -1,0 +1,21 @@
+if data.length === 0
+    div(class="alert alert-warning", role="alert")
+        h3 There are no products in the list.
+else
+    div(class="container col-3")
+        h3 Product's Table
+        table(class="table align-middle")
+            thead
+                tr
+                    th(scope="col") ID
+                    th(scope="col") Title
+                    th(scope="col") Price
+                    th(scope="col") Photo 
+            tbody 
+                each product in data
+                    tr
+                        th(scope="row")= product.id
+                        td= product.title
+                        td= product.price
+                        td
+                            img(src=product.thumbnail, alt=product.title)

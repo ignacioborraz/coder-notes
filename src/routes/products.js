@@ -1,31 +1,32 @@
 const router = require('express').Router()
-//requiero la clase Router del módulo de express
 
 const products = require('../../storage/products')
-//requiero el modulo del contenedor de productos que cree en la tarea anterior
 
 router.post('/', async(req, res, next) => {
-//ruta para crear un nuevo producto
-//utiliza el metodo POST y requiere BODY con las propiedades del producto
     try {
         let data = await products.save(req.body)
-        res.status(200).json({
-            response: data
-        })
+        res.status(201).render(
+            'pages/done',
+            {data}
+        )
     } catch(error) {
         next(error)
     }
 })
 
+router.get('/new', (_req, res) => {
+    res.status(200).render('pages/index')
+})
+
+
 router.get('/', async(_req, res, next) => {
-//ruta para obtener todos los productos
-//utiliza el metodo GET
     try {
         let data = await products.getAll()
         if (data) {
-            res.status(200).json({
-                response: data
-            })
+            res.status(200).render(
+                "pages/products",
+                {data}
+            )
         } else {
             res.status(404).json({
                 response: 'can not find'
@@ -37,8 +38,6 @@ router.get('/', async(_req, res, next) => {
 })
 
 router.get('/random', async(_req, res, next) => {
-//ruta para obtener un producto random
-//utiliza el metodo GET
     try {
         let data = await products.getOne()
         if (data) {
@@ -56,10 +55,7 @@ router.get('/random', async(_req, res, next) => {
 })
 
 router.get('/:id', async(req, res, next) => {
-//ruta para obtener un producto por id
-//utiliza el metodo GET y requiere PARAMS para el id
-    const { id } = req.params //del objeto params extraigo la propiedad id
-    //const id = req.params.id //sin desestructurar
+    const { id } = req.params
     try {
         let data = await products.getById(id)
         if (data) {
@@ -78,9 +74,7 @@ router.get('/:id', async(req, res, next) => {
 
 
 router.put('/:id', async(req, res, next) => {
-//ruta para modificar un producto
-//utiliza el metodo PUT y requiere PARAMS para el id y BODY para la propiedad a modificar
-let { id } = req.params
+    let { id } = req.params
     try {
         let data = await products.putById(id, req.body)
         if (data) {
@@ -98,8 +92,6 @@ let { id } = req.params
 })
 
 router.delete('/:id', async(req, res, next) => {
-//ruta para eliminar un producto
-//utiliza el metodo DELETE y requiere PARAMS para el id
     let { id } = req.params
     try {
         let data = await products.deleteById(id)
