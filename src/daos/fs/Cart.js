@@ -16,28 +16,32 @@ class CartManager{ //defino la clase
             if (!file) {
                 fs.writeFileSync(this.path,JSON.stringify([]))
             }
-            return null
+            let message = 'initializing'
+            return { success: true, message }
         } catch(err) {
             console.log(err.stack)
-            return { error: err.message }
+            let message = err.message
+            return { success: false, message }
         }
     }
 
-    recoverData = () => { //defino el método que va a recuperar los datos, si existen
+    recoverData = async () => { //defino el método que va a recuperar los datos, si existen
         try {
-            let carts = this.getCarts()
-            if (carts.length>0) {
-                this.carts = carts
-                this.id = carts[this.carts.length-1].id+1
+            let carts = await this.read()
+            if (carts.success) {
+                this.carts = carts.carts
+                this.id = carts.carts[this.carts.length-1]?.id+1
             }
-            return null
-        } catch (err) {
+            let message = 'recovering'
+            return { success: true, message }
+        } catch(err) {
             console.log(err.stack)
-            return { error: err.message }
+            let message = err.message
+            return { success: false, message }
         }
     }
 
-    newCart = async () => {//defino el método para crear un carrito
+    create = async () => {//defino el método para crear un carrito
         try {
             let cart = {
                 id: this.id,
@@ -47,20 +51,51 @@ class CartManager{ //defino la clase
             this.carts.push(cart)
             await fs.promises.writeFile(this.path, JSON.stringify(this.carts, null, 2))
             let message = 'cart created'
-            return { message }
+            return { success: true, message }
         } catch(err) {
             console.log(err.stack)
-            return { error: err.message }
+            let message = err.message
+            return { success: false, message }
         }
     }
 
-    addProductToCart = async (cId,pId) => {//defino el método para agregar un producto a un carrito
+    read = () => { //defino el método para obtener todos los carritos
         try {
-            let one = await this.getCartById(cId)
-            if (!one) {
+            let carts = JSON.parse(fs.readFileSync(this.path))
+            if (carts.length===0) {
+                let message = 'no carts yet'
+                return { success: false, message }
+            }
+            return { success: true, carts }
+        } catch(err) {
+            console.log(err.stack)
+            let message = err.message
+            return { success: false, message }
+        }
+    }
+    
+    readOne = async (id) => { //defino el método para obtener un carrito
+        try {
+            let one = this.carts.find(cart => cart.id === Number(id))
+            if (one) {
+                return { success: true, products: one.products }
+            } else {
+                let message = 'invalid id'
+                return { success: false, message }
+            }
+        } catch(err) {
+            console.log(err.stack)
+            let message = err.message
+            return { success: false, message }
+        }           
+    }
+
+    addProduct = async (cId,pId) => {//defino el método para agregar un producto a un carrito
+        try {
+            let one = await this.readOne(cId)
+            if (!one.success) {
                 let message = 'cart not found'
-                //console.log(message)
-                return { message }
+                return { success: false, message }
             }
             let index = one.products.map(prod=>prod.id).indexOf(pId)
             if (index>=0) {
@@ -71,71 +106,67 @@ class CartManager{ //defino la clase
                     quantity: 1
                 })
             }
-            this.carts.map(cart => cart.id===cId ? one : cart )
+            this.carts.map(cart => cart.id===Number(cId) ? one : cart )
             await fs.promises.writeFile(this.path, JSON.stringify(this.carts, null, 2))
-            let message = 'product added'
-            return { message }
+            let message = 'added product to cart'
+            return { success: true, message }
         } catch(err) {
             console.log(err.stack)
-            return { error: err.message }
+            let message = err.message
+            return { success: false, message }
         }
     }
 
-    deleteProductFromCart = async (cId,pId) => {//defino el método para agregar un producto a un carrito
+    deleteProduct = async (cId,pId) => {//defino el método para agregar un producto a un carrito
         try {
-            let one = await this.getCartById(cId)
-            if (!one) {
+            let one = await this.readOne(cId)
+            if (!one.success) {
                 let message = 'cart not found'
-                //console.log(message)
-                return { message }
+                return { success: false, message }
             }
             let index = one.products.map(prod=>prod.id).indexOf(pId)
             if (index<0) {
                 let message = 'product not found'
-                return { message }
+                return { success: false, message }
             }
             one.products[index].quantity--
+            if (one.products[index].quantity === 0) {
+                one.products.splice(index,1)
+            }
             this.carts.map(cart => cart.id===cId ? one : cart )
             await fs.promises.writeFile(this.path, JSON.stringify(this.carts, null, 2))
-            let message = 'product deleted'
-            return { message }
+            let message = 'deleted product to cart'
+            return { success: true, message }
         } catch(err) {
             console.log(err.stack)
-            return { error: err.message }
+            let message = err.message
+            return { success: false, message }
         }
     }
-    
-    getCarts = () => { //defino el método para obtener todos los carritos
+
+    destroy = async (id) => { //defino el metodo para eliminar un carrito
         try {
-            let carts =  fs.readFileSync(this.path)
-            carts = JSON.parse(carts)
-            if (carts) {
-                return carts
-            } else {
-                let message = 'no carts yet'
-                console.log(message)
-                return null
+            let all = await this.read()
+            if (!all.success) {
+                return all
             }
-        } catch(err) {
-            console.log(err.message)
-            return { error: err.message }
-        }
-    }
-    
-    getCartById = async (id) => { //defino el método para obtener un carrito
-        try {
-            let one = this.carts.find(cart => cart.id === id)
-            if (one) {
-                return one
-            } else {
-                let message = 'invalid id'
-                console.log(message)
-                return null
+            let index = all.carts.map(cart=>Number(cart.id)).indexOf(Number(id))
+            if (index<0) {
+                let message = 'cart not found'
+                return { success: false, message }
             }
+            console.log(all.carts)
+            console.log(index)
+            all.carts.splice(index,1)
+            this.carts = all.carts
+            await fs.promises.writeFile(this.path, JSON.stringify(this.carts, null, 2))
+            let message = 'deleted cart'
+            return { success: false, message }
         } catch(err) {
             console.log(err.stack)
-            return { error: err.message }
-        }           
+            let message = err.message
+            return { success: false, message }
+        }        
     }
 
 }
