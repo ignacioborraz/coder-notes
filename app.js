@@ -1,4 +1,7 @@
 require('dotenv').config()
+if (process.env.FROM === 'mongo') {
+    require('./src/daos/mongo/config')
+}
 
 const express = require('express')
 const app = express()

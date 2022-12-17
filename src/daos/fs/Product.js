@@ -17,34 +17,36 @@ class ProductManager{ //defino la clase
             if (!file) {
                 fs.writeFileSync(this.path,JSON.stringify([]))
             }
-            return null
+            let message = 'initializing'
+            return { success: true, message }
         } catch(err) {
             console.log(err.stack)
-            return { error: err.message }
+            let message = err.message
+            return { success: false, message }
         }
     }
 
-    recoverData = () => { //defino el método que va a recuperar los datos, si existen
+    recoverData = async () => { //defino el método que va a recuperar los datos, si existen
         try {
-            let products = this.getProducts()
-            if (products.length>0) {
-                this.products = products
-                this.id = products[this.products.length-1]?.id+1
-                this.codes = products.map(prod => prod.code)
+            let products = await this.read()
+            if (products.success) {
+                this.products = products.products
+                this.id = products.products[this.products.length-1]?.id+1
+                this.codes = products.products.map(prod => prod.code)
             }
-            return null
-        } catch (err) {
+            let message = 'recovering'
+            return { success: true, message }
+        } catch(err) {
             console.log(err.stack)
-            return { error: err.message }
+            let message = err.message
+            return { success: false, message }
         }
     }
 
-    addProduct = async ({title,description,price,code,stock,category,thumbnail}) => {//defino el método para agregar un producto
-        //el usuario tiene que pasar un objeto con todas esas propiedades
+    create = async ({title,description,price,code,stock,category,thumbnail}) => {//defino el método para agregar un producto
         if (!title || !description || !price || !code || !stock || !thumbnail) {
             let message = 'complete all the fields'
-            //console.log(message)
-            return { message }
+            return { success: false, message }
         }
         try {
             if (!this.codes.includes(code)) {
@@ -55,99 +57,96 @@ class ProductManager{ //defino la clase
                 this.products.push(product)
                 await fs.promises.writeFile(this.path, JSON.stringify(this.products, null, 2))
                 let message = 'product created'
-                return { message }
+                return { success: true, message }
             }
             let message = 'invalid code'
-            return { message }
+            return { success: false, message }
         } catch(err) {
             console.log(err.stack)
-            return { error: err.message }
+            let message = err.message
+            return { success: false, message }
         }
     }
     
-    getProducts = (limit) => { //defino el método para obtener todos los productos
+    read = (limit) => { //defino el método para obtener todos los productos
         try {
-            let products =  fs.readFileSync(this.path)
-            if (products) {
-                if (limit) {
-                    products = products.slice(0,limit)
-                }
-                //console.log(products)
-                return products
-            } else {
+            let products = JSON.parse(fs.readFileSync(this.path))
+            if (products.length===0) {
                 let message = 'no products yet'
-                console.log(message)
-                return null
+                return { success: false, message }
             }
+            if (limit) {
+                products = products.slice(0,limit)
+            }
+            return { success: true, products }
         } catch(err) {
             console.log(err.stack)
-            return { error: err.message }
+            let message = err.message
+            return { success: false, message }
         }
     }
     
-    getProductById = async (id) => { //defino el método para obtener un producto
-        //console.log(id)
+    readOne = async (id) => { //defino el método para obtener un producto
         try {
-            let one = this.products.find(prod => prod.id === id)
+            let one = this.products.find(prod => prod.id === Number(id))
             if (one) {
-                return one
+                return { success: true, one }
             } else {
                 let message = 'invalid id'
-                console.log(message)
-                return null
+                return { success: false, message }
             }
         } catch(err) {
             console.log(err.stack)
-            return { error: err.message }
+            let message = err.message
+            return { success: false, message }
         }           
     }
 
-    updateProduct = async (id,data) => { //defino el método para modificar un producto
-        //el usuario debe pasar el id del producto y un objeto con la clave-valor a modificar
+    update = async (id,data) => { //defino el método para modificar un producto
         try {
-            const one = await this.getProductById(id)
-            if (!one) {
+            const one = await this.readOne(id)
+            if (!one.success) {
                 let message = 'cant find id'
-                console.log(message)
-                return null
+                return { success: false, message }
             }
             if (!data) {
                 let message = 'must enter almost one key'
-                return { message }
+                return { success: false, message }
             }
             if (!data.id) {
                 for (let prop in data) {
                     one[prop] = data[prop]
                 }
-                this.products.map(prod => prod.id===id ? one : prod )
+                this.products.map(prod => prod.id===Number(id) ? one : prod )
                 await fs.promises.writeFile(this.path, JSON.stringify(this.products, null, 2))
                 let message = 'updated product!'
-                return { message }
+                return { success: true, message }
             } else { 
-                let message = 'can´t modify the id'
-                return { message }
+                let message = 'can not modify the id'
+                return { success: false, message }
             }
         } catch(err) {
             console.log(err.stack)
-            return { error: err.message }
+            let message = err.message
+            return { success: false, message }
         }
     }
 
-    deleteProduct = async (id) => { //defino el metodo para eliminar un producto
+    destroy = async (id) => { //defino el metodo para eliminar un producto
         try {
-            const one = await this.getProductById(id)
-            if (!one) {
-                let message = 'cant find id'
-                console.log(message)
-                return null
+            const one = await this.readOne(id)
+            if (!one.success) {
+                let message = 'can not find id'
+                return { success: false, message }
             }
-            this.products = this.products.filter(prod => prod.id !== id)
+            this.products = this.products.filter(prod => prod.id !== Number(id))
             await fs.promises.writeFile(this.path, JSON.stringify(this.products, null, 2))
             let message = 'deleted product!'
-            return { message }
+            return { success: true, message }
         } catch(err) {
             console.log(err.stack)
-            return { error: err.message }
+            let message = err.message
+            return { success: false, message }
         }        
     }
 
