@@ -1,111 +1,78 @@
-const router = require('express').Router()
+const express = require('express')
+const router = express.Router()
+const { FROM } = process.env
 
-const products = require('../../storage/products')
+const ProductManager = require(`../daos/${FROM}/Product`)
+let products = new ProductManager('./src/data/products.json')
 
-router.post('/', async(req, res, next) => {
+/* PETICION GET PARA OBTENER PRODUCTOS */
+router.get('/', async(req, res, next) => {
+    let limit = req.query?.limit
     try {
-        let data = await products.save(req.body)
-        res.status(201).render(
-            'pages/done',
-            {data}
-        )
-    } catch(error) {
-        next(error)
-    }
-})
-
-router.get('/new', (_req, res) => {
-    res.status(200).render('pages/index')
-})
-
-
-router.get('/', async(_req, res, next) => {
-    try {
-        let data = await products.getAll()
-        if (data) {
-            res.status(200).render(
-                "pages/products",
-                {data}
-            )
-        } else {
-            res.status(404).json({
-                response: 'can not find'
-            })
+        let prods = await products.getProducts(limit)
+        if (!prods) {
+            return res.status(404).send({error: 'not found'})
         }
+        return res.status(200).send(prods)
     } catch(error) {
-        next(error)
+        return next()
     }
 })
 
-router.get('/random', async(_req, res, next) => {
-    try {
-        let data = await products.getOne()
-        if (data) {
-            res.status(200).json({
-                response: data
-            })
-        } else {
-            res.status(404).json({
-                response: 'can not find'
-            })
-        }
-    } catch(error) {
-        next(error)
-    }
-})
-
+/* PETICION GET PARA OBTENER UN PRODUCTO */
 router.get('/:id', async(req, res, next) => {
-    const { id } = req.params
+    let { id } = req.params
     try {
-        let data = await products.getById(id)
-        if (data) {
-            res.status(200).json({
-                response: data
-            })
-        } else {
-            res.status(404).json({
-                response: 'not found'
-            })
+        let one = await products.getProductById(Number(id))
+        if (!one) {
+            return res.status(404).send({error: 'not found'})
         }
+        return res.status(200).send(one)
     } catch(error) {
-        next(error)
+        return next()
     }
 })
 
+/* PETICION POST PARA CREAR UN PRODUCTO */
+router.post('/', async(req, res, next) => {
+    let { title,description,price,code,stock,thumbnail } = req.body
+    try {
+        let prod = await products.addProduct({ title,description,price,code,stock,thumbnail })
+        if (prod.message==='product created') {
+            return res.status(200).send(prod)
+        } else {
+            return res.status(400).send(prod)
+        }
+    } catch(error) {
+        return next()
+    }
+})
 
+/* PETICION PUT PARA MODIFICAR UN PRODUCTO */
 router.put('/:id', async(req, res, next) => {
     let { id } = req.params
     try {
-        let data = await products.putById(id, req.body)
-        if (data) {
-            res.status(200).json({
-                response: data
-            })
-        } else {
-            res.status(404).json({
-                response: 'can not find'
-            })
+        let prod = await products.updateProduct(Number(id),req.body)
+        if (!prod) {
+            return res.status(404).send({error: 'not found'})
         }
+        return res.status(200).send(prod)
     } catch(error) {
-        next(error)
+        return next()
     }
 })
 
+/* PETICION DELETE PARA ELIMINAR UN PRODUCTO */
 router.delete('/:id', async(req, res, next) => {
     let { id } = req.params
     try {
-        let data = await products.deleteById(id)
-        if (data) {
-            res.status(200).json({
-                response: 'product deleted'
-            })
-        } else {
-            res.status(404).json({
-                response: 'can not find'
-            })
+        let prod = await products.deleteProduct(Number(id))
+        if (!prod) {
+            return res.status(404).send({error: 'not found'})
         }
+        return res.status(200).send(prod)
     } catch(error) {
-        next(error)
+        return next(error)
     }
 })
 
