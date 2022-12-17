@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const { FROM } = process.env
 
-
 let carts
 const CartManager = require(`../daos/${FROM}/Cart`)
 if (FROM==='mongo') {
