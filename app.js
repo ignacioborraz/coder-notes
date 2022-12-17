@@ -20,8 +20,8 @@ app.get('/', async(_req, res) => {
         port: process.env.PORT || 8000
     })
 })
+app.use(errorHandler)
 app.use(logger('dev'))
 app.use('/api', router)
-app.use(errorHandler)
 
 module.exports = app
