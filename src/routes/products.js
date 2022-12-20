@@ -7,7 +7,9 @@ const ProductManager = require(`../daos/${FROM}/Product`)
 if (FROM==='mongo') {
     products = new ProductManager()
 }
-products = new ProductManager('./src/data/products.json')
+if (FROM==='fs') {
+    products = new ProductManager('./src/data/products.json')
+}
 
 /* PETICION POST PARA CREAR UN PRODUCTO */
 router.post('/', async(req, res, next) => {
