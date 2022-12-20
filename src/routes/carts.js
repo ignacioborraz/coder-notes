@@ -7,7 +7,9 @@ const CartManager = require(`../daos/${FROM}/Cart`)
 if (FROM==='mongo') {
     carts = new CartManager()
 }
-carts = new CartManager('./src/data/carts.json')
+if (FROM==='fs') {
+    carts = new CartManager('./src/data/carts.json')
+}
 
 /* PETICION POST PARA CREAR UN CARRITO */
 router.post('/', async(req, res, next) => {
