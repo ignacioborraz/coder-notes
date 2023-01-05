@@ -5,26 +5,26 @@ if (process.env.FROM === 'mongo') {
 
 const express = require('express')
 const app = express()
+const path = require('path')
 
 const logger = require('morgan')
 
 const router = require('./src/routes/index')
+const viewsRouter = require('./src/routes/views/index')
 const errorHandler = require('./src/middlewares/errorHandler')
 
 app.use(express.json())
+app.use(express.static(__dirname + '/public'))
 app.use(express.urlencoded({extended:true}))
 
-app.set('views', './views')
-app.set('view engine', 'pug')
+const handlebars = require('express-handlebars')
+app.engine('handlebars', handlebars.engine())
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'handlebars')
 
-app.get('/', async(_req, res) => {
-    res.status(200).json({
-        enviroment: process.env.NODE_ENV || undefined,
-        port: process.env.PORT || 8000
-    })
-})
 app.use(errorHandler)
 app.use(logger('dev'))
+app.use('/', viewsRouter)
 app.use('/api', router)
 
 module.exports = app

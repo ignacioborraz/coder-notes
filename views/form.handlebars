@@ -1,0 +1,41 @@
+<main>
+	<div class="container">
+		<div class="row">
+			<div class="col-6 d-flex flex-column">
+                <h3>Product register</h3>
+                <form id="productsForm" action="/new-product", method="POST">
+                    <div class="mb-2">
+                        <label for="productTitle" class="form-label">Title</label>
+                        <input type="text" class="form-control" name="title" id="productTitle" />
+                    </div>
+					<div class="mb-2">
+                        <label for="productDescription" class="form-label">Description</label>
+                        <input type="text" class="form-control" name="description" id="productDescription" />
+                    </div>
+                    <div class="mb-2">
+                        <label for="productCategory" class="form-label">Category</label>
+                        <input type="text" class="form-control" name="category" id="productCategory" />
+                    </div>
+                    <div class="mb-2">
+                        <label for="productPrice" class="form-label">Price</label>
+                        <input type="text" class="form-control" name="price" id="productPrice" />
+                    </div>
+					<div class="mb-2">
+                        <label for="productCode" class="form-label">Code</label>
+                        <input type="text" class="form-control" name="code" id="productCode" />
+                    </div>
+					<div class="mb-2">
+                        <label for="productStock" class="form-label">Stock</label>
+                        <input type="text" class="form-control" name="stock" id="productStock" />
+                    </div>
+                    <div class="mb-2">
+                        <label for="productThumbnail" class="form-label">Thumbnail</label>
+                        <input type="text" class="form-control" name="thumbnail" id="productThumbnail" aria-describedby="thumbnailSource"/>
+                    </div>
+                    <button id='newProduct' type="submit" class="btn btn-primary mt-2">Save product</button>
+                </form>
+                </div>
+		    <div id="productTable" class="col-6"></div>
+		</div>
+	</div>
+</main>

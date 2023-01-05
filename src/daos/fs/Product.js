@@ -88,13 +88,12 @@ class ProductManager{ //defino la clase
     
     readOne = async (id) => { //defino el método para obtener un producto
         try {
-            let one = this.products.find(prod => prod.id === Number(id))
-            if (one) {
-                return { success: true, one }
-            } else {
-                let message = 'invalid id'
+            let product = this.products.find(prod => prod.id === Number(id))
+            if (!product) {
+                let message = 'not found'
                 return { success: false, message }
-            }
+            } 
+            return { success: true, product }
         } catch(err) {
             console.log(err.stack)
             let message = err.message

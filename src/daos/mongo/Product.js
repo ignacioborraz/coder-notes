@@ -24,7 +24,7 @@ class ProductManager{
     
     read = async (limit) => { //defino el método para obtener todos los productos
         try {
-            let products =  await Product.find().limit(limit)
+            let products =  await Product.find().limit(limit).lean()
             if (!products) {
                 let message = 'no products yet'
                 return { success: false, message }
@@ -39,7 +39,7 @@ class ProductManager{
     
     readOne = async (id) => { //defino el método para obtener un producto
         try {
-            let product =  await Product.findById(id)
+            let product =  await Product.findOne({ _id: id }).lean()
             if (!product) {
                 let message = 'not found'
                 return { success: false, message }
