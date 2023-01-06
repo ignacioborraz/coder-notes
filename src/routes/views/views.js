@@ -84,7 +84,6 @@ router.get('/chat', async(req, res) => {
     }
 })
 
-
 /* PETICION GET PARA VER UN FORMULARIO DE NUEVO PRODUCTO */
 router.get('/form', async(req, res) => {
     try {
