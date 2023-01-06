@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { FROM } = process.env
+const generateProducts = require('../../daos/products.faker')
 
 let products
 const ProductManager = require(`../../daos/${FROM}/Product`)
@@ -24,6 +25,7 @@ router.get('/', async(req, res, next) => {
         return res.status(200).render('index', {
             title: "list of products",
             nav: [
+                { url: "./products-test", title: "faker" },
                 { url: "/form", title: "form" },
                 { url: "/chat", title: "chat" }
             ],
@@ -50,6 +52,7 @@ router.get('/detail/:id', async(req, res, next) => {
             title: "list of products",
             nav: [
                 { url: "/", title: "home" },
+                { url: "./products-test", title: "faker" },
                 { url: "/form", title: "form" },
                 { url: "/chat", title: "chat" }
             ],
@@ -69,6 +72,7 @@ router.get('/chat', async(req, res) => {
             title: "chat",
             nav: [
                 { url: "/", title: "list" },
+                { url: "./products-test", title: "faker" },
                 { url: "/form", title: "form" }
             ],
             fileScript: "chat"
@@ -80,7 +84,6 @@ router.get('/chat', async(req, res) => {
     }
 })
 
-
 /* PETICION GET PARA VER UN FORMULARIO DE NUEVO PRODUCTO */
 router.get('/form', async(req, res) => {
     try {
@@ -88,6 +91,7 @@ router.get('/form', async(req, res) => {
             title: "new product",
             nav: [
                 { url: "./", title: "list" },
+                { url: "./products-test", title: "faker" },
                 { url: "/chat", title: "chat" }
             ],
             fileScript: "newProduct"
@@ -143,6 +147,31 @@ router.delete('/:id', async(req, res, next) => {
             return res.status(404).send({error: 'not found'})
         }
         return res.status(200).send(prod)
+    } catch(error) {
+        return res.status(500).render('error',{
+            message: error.message
+        })
+    }
+})
+
+/* PETICION GET PARA VER LOS FAKER PRODUCTS */
+router.get('/products-test', async(req, res, next) => {
+    try {
+        let response = await generateProducts(6)
+        if (!response) {
+            return res.status(404).render('error',{
+                message: 'no products yet'
+            })
+        }
+        return res.status(200).render('index-faker', {
+            title: "list of products",
+            nav: [
+                { url: "./", title: "list" },
+                { url: "/form", title: "form" },
+                { url: "/chat", title: "chat" }
+            ],
+            products: response
+        })
     } catch(error) {
         return res.status(500).render('error',{
             message: error.message
