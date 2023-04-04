@@ -32,6 +32,9 @@ let incluir = { es7: 'incluir',incluye_al,incluye_bet,incluye_palabra1,incluye_p
  */
 let datos = {
     nombre:'ignacio',
+    mascotas: 3,
+    altura: 178,
+    localidad: 'carlos paz',
     apellido:'borraz',
     edad:'32'
 }
@@ -65,8 +68,17 @@ let unir_objs_con_spread = { ...{claves},...{valores} } //{ claves:['nombre','ap
  * @es9
  * @rest
  */
-let { nombre,...rest } = datos
+let { nombre,localidad,...rest } = datos
+//console.log(nombre)
+//console.log(localidad)
 //console.log(rest)               //{ apellido: 'borraz', edad: '32' }
+const { edad,...restoDelObjetoRest } = rest
+//console.log(edad)
+//console.log(restoDelObjetoRest)
+const { altura,...restoDelobjetoAnterior } = restoDelObjetoRest
+//console.log(altura)
+//console.log(restoDelobjetoAnterior)
+
 let [primera,...resto] = valores
 //console.log(resto)              //[ 'borraz', '32' ]
 
@@ -90,15 +102,18 @@ let arrayFlat = arrayAnidado.flat()          //[ 'hola', 'como', 'estas', 'bien'
  * @es11
  * @nullish
  */
-let cero = 0
+let cero = false
 let nulo = null
 let no_definido = undefined
+//console.log(cero)
 cero = cero ?? 'se reasigna si es nulo/indefinido'
-//console.log(cero)                                       //0
+//console.log(cero)  
+//console.log(nulo)                                     //0
 nulo = nulo ?? 'si es nulo/indefinido'
 //console.log(nulo)                                       //'si es nulo/indefinido'
-no_definido = no_definido ?? 'si es nulo/indefinido'
-//console.log(no_definido)                               //'si es nulo/indefinido'
+//console.log(no_definido);
+//no_definido = no_definido ?? (() => 'hola')
+console.log(no_definido)                                //'si es nulo/indefinido'
 
 /**
  * @es11
