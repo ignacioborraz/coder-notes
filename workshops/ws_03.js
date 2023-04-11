@@ -9,13 +9,13 @@ const hacerOperacion = (num1,num2,operacion) => {
     return resultado
 }
 
-hacerOperacion(20,2,sumar)
+//hacerOperacion(20,2,sumar)
 //el resultado es 22
-hacerOperacion(20,2,restar)
+//hacerOperacion(20,2,restar)
 //el resultado es 18
-hacerOperacion(20,2,multiplicar)
+//hacerOperacion(20,2,multiplicar)
 //el resultado es 40
-hacerOperacion(20,2,dividir)
+//hacerOperacion(20,2,dividir)
 //el resultado es 10
 
 /*
@@ -42,7 +42,7 @@ let dividirBien = (num1,num2)=> {
     })
 }
 
-dividirBien(20,1)
+/* dividirBien(20,1)
     .then(resultado=>console.log(`el resultado es ${resultado}`))
     .catch(resultado=>console.log(`error: ${resultado}`))
 //el resultado es 20
@@ -73,7 +73,35 @@ dividirBien(8,4)
         console.log('no siempre es necesario retornar y en este caso solo muestro en consola')
         console.log(resultado)
     })
-    .catch(resultado=>console.log(`error: ${resultado}`))
+    .catch(resultado=>console.log(`error: ${resultado}`)) */
+
+//let err = null //no se necesita definir ninguno de los parámetros de las callbacks
+//ya que e esos parámetros SON LAS RESPUESTAS correspondientes del éxito/fracaso
+let respuesta1 = dividirBien(10,2) //la promesa cuando tiene exito la vamos a manejar con THEN
+    .then(respuesta=> {
+        console.log('me metí en el then')
+        console.log(respuesta)
+        return respuesta
+    })
+    .then(respuesta2=> {    //respuesta2 es lo que recibe del then anterior (lo que está en el return)
+        respuesta2 = respuesta2+10
+        return respuesta2
+        //return respuesta2+10 //puedo retornar directamente
+    })
+    .then(res=> {           //res es lo que recibe del then anterior (lo que está en el return anterior)
+        res = res*2
+        return `la respuesta de todas las operaciones realizadas es ${res}`
+    })
+    .catch(respuesta=> console.log(respuesta))
+//console.log(respuesta1)
+
+let respuesta2 = dividirBien(10,0) //la promesa cuando se rechaza la vamos a manejar con CATCH
+    .then(res=>console.log(`el resultado es: ${res}`))
+    .catch(err=>{
+        console.log('me metí en el catch')
+        console.log(err)
+    })
+//console.log(respuesta2)
 
 //funcion asincrona como alternativa eficiente al then/catch
 //además dividirAsync envuelve a dividirBien por lo que además es una closure 
@@ -87,5 +115,19 @@ let dividirAsync = async(num1,num2)=> {
         console.log(`async error: ${error}`)
     }
 }
-dividirAsync(10,2)  //el resultado es 5
-dividirAsync(10,0)  //async error: no se puede dividir por cero
+//dividirAsync(10,2)  //el resultado es 5
+//dividirAsync(10,0)  //async error: no se puede dividir por cero
+
+async function dividirOtraAsync (n1,n2) {
+    let resultado = await dividirBien(n1,n2)
+    console.log(resultado)
+    return resultado
+}
+
+dividirOtraAsync(5,2)
+dividirOtraAsync(5,0)
+
+//el orden de ejecucion en mi computador es:
+    //primero la funcion que responde 10/2
+    //segundo la funciona asincrona
+    //tercero la funcion que catchea 10/0
