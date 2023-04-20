@@ -18,7 +18,7 @@ let validBornDate = bornDate.isValid()
 let formatBornDate = bornDate.format("MMM Do YY")
 //console.log(bornDate)
 
-let days = currentDate.diff(bornDate,'days')/1000
+let days = currentDate.diff(bornDate,'days')
 console.log(days)
 
 const server = http.createServer(   //creo un servidor
