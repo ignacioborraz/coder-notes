@@ -1,0 +1,22 @@
+[
+  {
+    "title": "prod 2",
+    "description": "descr 3",
+    "stock": 800,
+    "url_photo": "url de producto 3",
+    "price": 15,
+    "id": 2,
+    "products": {
+      "id": 2,
+      "stock": 10
+    }
+  },
+  {
+    "title": "producto 3",
+    "description": "descr 3",
+    "stock": 800,
+    "url_photo": "url de producto 3",
+    "price": 15,
+    "id": 3
+  }
+]

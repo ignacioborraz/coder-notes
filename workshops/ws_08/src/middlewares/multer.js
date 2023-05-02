@@ -1,5 +1,5 @@
 import multer from 'multer'
-import { __dirname } from '../utils'
+import { __dirname } from '../../utils.js'
 
 //antes de instanciar el módulo de multer
 //debemos configurar donde se guardarán los archivos

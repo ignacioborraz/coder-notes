@@ -1,7 +1,7 @@
 import express from 'express'
 import router from './routes/index.js'
-import error_handler from '../middlewares/error_handler.js'
-import not_found_handler from '../middlewares/not_found.js'
+import error_handler from './middlewares/error_handler.js'
+import not_found_handler from './middlewares/not_found.js'
 
 const server = express()
 
