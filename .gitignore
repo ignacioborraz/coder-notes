@@ -6,6 +6,7 @@
 /workshops/ws_10/node_modules
 /workshops/extra_01/node_modules
 /native_server/node_modules
-/tickets/node_modules
+/movies/node_modules
+/movies/.env
 /node_modules.js
 /handsonlab/node_modules.js
