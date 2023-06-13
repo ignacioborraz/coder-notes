@@ -1,5 +1,6 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
+import expressSession from 'express-session'
 import 'dotenv/config.js'
 import router from './router/index.js'
 import error_handler from './middlewares/error.js'
@@ -9,6 +10,11 @@ const server = express()
 
 //middlewares
 server.use(cookieParser(process.env.SECRET_COOKIE))
+server.use(expressSession({
+    secret: process.env.SECRET_SESSION,
+    resave: true,
+    saveUninitialized: true
+}))
 server.use('/public',express.static('public'))
 server.use(express.json())
 server.use(express.urlencoded({extended:true}))
