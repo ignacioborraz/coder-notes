@@ -6,11 +6,13 @@ import morgan from 'morgan'
 import router from './router/index.js'
 import error_handler from './middlewares/error.js'
 import not_found_handler from './middlewares/notfound.js'
-import sessionFileStore from 'session-file-store'
+//import sessionFileStore from 'session-file-store'
 import mongoStore from 'connect-mongo'
+import passport from 'passport'
+import inicializePassport from './config/passport.js'
 
 const server = express()
-const FileStore = sessionFileStore(expressSession)
+//const FileStore = sessionFileStore(expressSession)
 //middlewares
 server.use(cookieParser(process.env.SECRET_COOKIE))
 /* server.use(expressSession({
@@ -29,6 +31,9 @@ server.use('/',express.static('public'))
 server.use(express.json())
 server.use(express.urlencoded({extended:true}))
 server.use(morgan('dev'))
+inicializePassport()
+server.use(passport.initialize())
+server.use(passport.session())
 
 //endpoints
 server.use('/api',router)
