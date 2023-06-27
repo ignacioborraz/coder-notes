@@ -1,8 +1,36 @@
 import passport from "passport"
 import { Strategy } from 'passport-local'
+import GHStrategy from 'passport-github2'
 import User from "../models/User.js"
+const { GH_CLIENT,GH_SECRET } = process.env
+const githubCb = 'http://localhost:8080/api/auth/github/callback'
 
 export default function inicializePassport() {
+    passport.use(
+        'github',
+        new GHStrategy(
+            { clientID:GH_CLIENT,clientSecret:GH_SECRET,callbackURL:githubCb },
+            async (accessToken,refreshToken,profile,done) => {
+                try {
+                    //console.log(profile)
+                    let one = await User.findOne({ email:profile._json.login })
+                    if (!one) {
+                        let user = await User.create({
+                            name:profile._json.name,
+                            email:profile._json.login,
+                            age:18,
+                            photo:profile._json.avatar_url,
+                            password:profile._json.id
+                        })
+                        return done(null,user)
+                    }
+                    return done(null,one)
+                } catch (error) {
+                    return done(error)
+                }
+            }
+        )
+    )
 	passport.use(
         'register',
         new Strategy(

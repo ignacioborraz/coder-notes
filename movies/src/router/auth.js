@@ -7,6 +7,7 @@ import createHash from '../middlewares/createHash.js'
 import isValidPassword from '../middlewares/isValidPassword.js'
 import userExists from "../middlewares/userExists.js"
 import passport from "passport"
+import generateToken from "../middlewares/generateToken.js"
 
 const auth_router = Router()
 
@@ -34,6 +35,7 @@ auth_router.post('/signin',
     passIs8,
     passport.authenticate('signin',{ failureRedirect:'/api/auth/fail-signin' }),
     isValidPassword,
+    generateToken,
     (req,res)=> {
         req.session.email = req.user.email
         req.session.role = req.user.role
@@ -41,7 +43,8 @@ auth_router.post('/signin',
             success: true,
             message: 'user signed in!',
             passport: req.session.passport,
-            user: req.user
+            user: req.user,
+            token: req.token
         })
 })
 auth_router.get('/fail-signin',(req,res)=> res.status(400).json({
@@ -68,5 +71,23 @@ auth_router.post('/signout',async(req,res,next)=>{
         next(error)
     }
 })
+
+//GH REGISTER
+auth_router.get('/github',
+    passport.authenticate('github',{ scope:['user:email'] }),
+    (req,res)=> res.status(201).json({
+            success: true,
+            message: 'user created!',
+            passport: req.session.passport,
+            user: req.user
+    })
+)
+auth_router.get('/github/callback',
+    passport.authenticate('github',{ failureRedirect:'/api/auth/fail-register' }),
+        (req,res)=> {
+            req.session.user = req.user
+            return res.redirect('/')
+    }
+)
 
 export default auth_router

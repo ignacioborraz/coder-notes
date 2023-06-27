@@ -1,5 +1,6 @@
-import { Router } from "express";
-import Movie from "../models/Movie.js";
+import { Router } from "express"
+import Movie from "../models/Movie.js"
+import auth from "../middlewares/auth.js"
 
 let movies_router = Router()
 
@@ -17,7 +18,7 @@ movies_router.post(
         }
     }
 )
-movies_router.get('/', async(req,res,next)=> {
+movies_router.get('/', auth, async(req,res,next)=> {
     let page = 1
     let limit = 5
     if (req.query.page > 0) { page = req.query.page }
