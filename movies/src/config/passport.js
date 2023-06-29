@@ -1,6 +1,7 @@
 import passport from "passport"
 import { Strategy } from 'passport-local'
 import GHStrategy from 'passport-github2'
+import jwt from "passport-jwt"
 import User from "../models/User.js"
 const { GH_CLIENT,GH_SECRET } = process.env
 const githubCb = 'http://localhost:8080/api/auth/github/callback'
@@ -65,6 +66,28 @@ export default function inicializePassport() {
                 }
             }
         )
+    )
+    passport.use(
+        'jwt',
+        new jwt.Strategy({
+            jwtFromRequest: jwt.ExtractJwt.fromExtractors([(req)=>req?.cookies['token']]),
+            secretOrKey: process.env.SECRET
+        },
+        async (jwt_payload,done) => {
+            try {
+                //console.log(jwt_payload)
+                let user = await User.findOne({ email:jwt_payload.email })
+                console.log(user)
+                if (user) {
+                    delete user.password
+                    return done(null, user)
+                } else {
+                    return done(null, false, {messages: 'user not found'})
+                }
+            } catch (error) {
+                return done(error,false)
+            }
+        })
     )
     passport.serializeUser((user,done) => done(null,user._id))
     passport.deserializeUser(async (id, done) => {

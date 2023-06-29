@@ -1,6 +1,7 @@
 import { Router } from "express"
 import Movie from "../models/Movie.js"
-import auth from "../middlewares/auth.js"
+import authenticate from "../middlewares/authenticate.js"
+import passport_call from "../middlewares/passport_call.js"
 
 let movies_router = Router()
 
@@ -18,7 +19,7 @@ movies_router.post(
         }
     }
 )
-movies_router.get('/', auth, async(req,res,next)=> {
+movies_router.get('/',passport_call('jwt'), authenticate, async(req,res,next)=> {
     let page = 1
     let limit = 5
     if (req.query.page > 0) { page = req.query.page }
@@ -27,7 +28,7 @@ movies_router.get('/', auth, async(req,res,next)=> {
         let all = await Movie.paginate({},{ limit,page })
         return res.status(200).json({ success: true, response: all })
     } catch (error) {
-        next(error)
+        return next(error)
     }
 })
 movies_router.get(
