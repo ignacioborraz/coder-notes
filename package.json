@@ -2,7 +2,7 @@
   "name": "coder-sum",
   "version": "1.3.0",
   "description": "",
-  "main": "index.js",
+  "main": "coder.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
