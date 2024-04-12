@@ -1,0 +1,56 @@
+[
+  {
+    "id": "3e6cd8e0334e950a7e2056fe",
+    "text": "my first note",
+    "category": "done",
+    "date": "2024-04-12T23:52:30.739Z"
+  },
+  {
+    "id": "49245d1a92cd5e38568b8385",
+    "text": "my 2nd note",
+    "category": "to do",
+    "date": "2024-04-12T23:52:30.742Z"
+  },
+  {
+    "id": "72e171172c88fd960ef67e0b",
+    "text": "my 3rd note",
+    "category": "to do",
+    "date": "2024-04-12T23:52:30.743Z"
+  },
+  {
+    "id": "396fd1e60710765cea75c865",
+    "text": "my 4th note",
+    "category": "to do",
+    "date": "2024-04-12T23:52:30.744Z"
+  },
+  {
+    "id": "ec2e641d01f2f0791b73fd20",
+    "text": "my 5th note",
+    "category": "done",
+    "date": "2024-04-12T23:52:30.744Z"
+  },
+  {
+    "id": "a77ba4b6521d6dcd5724771a",
+    "text": "my 6th note",
+    "category": "done",
+    "date": "2024-04-12T23:52:30.744Z"
+  },
+  {
+    "id": "693185f53541aa527abbd47f",
+    "text": "my 7th note",
+    "category": "done",
+    "date": "2024-04-12T23:52:30.745Z"
+  },
+  {
+    "id": "1478692d082eddc84d5aa9c3",
+    "text": "my 8th note",
+    "category": "to do",
+    "date": "2024-04-12T23:52:30.745Z"
+  },
+  {
+    "id": "029b2eb395a688a4785838a2",
+    "text": "my 9th note",
+    "category": "to do",
+    "date": "2024-04-12T23:52:30.746Z"
+  }
+]
