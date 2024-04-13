@@ -1,9 +1,9 @@
-const fs = require("fs");
-const crypto = require("crypto");
+import fs from "fs";
+import crypto from "crypto";
 
 class NotesManager {
   constructor() {
-    this.path = "./files/notes.json";
+    this.path = "./data/fs/files/notes.json";
     this.init();
   }
   init() {
@@ -42,10 +42,11 @@ class NotesManager {
       throw error;
     }
   }
-  async read() {
+  async read(category) {
     try {
       let all = await fs.promises.readFile(this.path, "utf-8");
       all = JSON.parse(all);
+      category && (all = all.filter((each) => each.category === category));
       return all;
     } catch (error) {
       throw error;
@@ -116,3 +117,8 @@ async function test() {
   }
 }
 //test();
+
+const notesManager = new NotesManager();
+export default notesManager;
+
+//export { read, create, update, destroy }
