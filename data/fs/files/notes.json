@@ -24,12 +24,6 @@
     "date": "2024-04-12T23:52:30.744Z"
   },
   {
-    "id": "ec2e641d01f2f0791b73fd20",
-    "text": "my 5th note",
-    "category": "done",
-    "date": "2024-04-12T23:52:30.744Z"
-  },
-  {
     "id": "a77ba4b6521d6dcd5724771a",
     "text": "my 6th note",
     "category": "done",
@@ -52,5 +46,29 @@
     "text": "my 9th note",
     "category": "to do",
     "date": "2024-04-12T23:52:30.746Z"
+  },
+  {
+    "id": "3d1fe9f4edc6aeef63c6254e",
+    "text": "note from postman",
+    "category": "to do",
+    "date": "2024-04-13T18:26:38.357Z"
+  },
+  {
+    "id": "f3bec63731f1586ca7919254",
+    "text": "note from postman",
+    "category": "to do",
+    "date": "2024-04-13T18:26:56.282Z"
+  },
+  {
+    "id": "f09f32b8c68c8840eb83fb92",
+    "text": "note from postman",
+    "category": "to do",
+    "date": "2024-04-13T18:27:59.230Z"
+  },
+  {
+    "id": "427562be92e4bc6d8cb7c67b",
+    "text": "another note from postman",
+    "category": "done",
+    "date": "2024-04-13T18:28:40.993Z"
   }
 ]
